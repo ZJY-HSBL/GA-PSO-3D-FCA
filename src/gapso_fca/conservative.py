@@ -68,6 +68,7 @@ def conservative_fca_step(
     middle: float = .50,
     width: float = .55,
     strength: float = 1.0,
+    response_power: float = 1.0,
     mask: np.ndarray | None = None,
     cfl_limit: float = .95,
     max_substeps: int = 4096,
@@ -92,6 +93,8 @@ def conservative_fca_step(
         raise ValueError('dt must be positive and state finite and nonnegative')
     if not (0 <= strength <= 1) or not (0 < cfl_limit < 1) or max_substeps < 1:
         raise ValueError('strength/cfl_limit/max_substeps outside admissible range')
+    if response_power < 1 or not np.isfinite(response_power):
+        raise ValueError('response_power must be >= 1')
     if rule not in (0, 1, 2) or not (0 < middle < 1) or width <= 0:
         raise ValueError('invalid fuzzy configuration')
     active = np.ones_like(state, dtype=bool) if mask is None else np.asarray(mask, dtype=bool)
@@ -121,7 +124,7 @@ def conservative_fca_step(
                 relative = np.divide(np.abs(left-right), np.maximum(left, right),
                                      out=np.zeros_like(left), where=np.maximum(left, right)>0)
                 g = (1.0-strength) + strength * (
-                    fuzzy_gain(relative, structure, params) / zero_response)
+                    fuzzy_gain(relative**response_power, structure, params) / zero_response)
             conductivity = harmonic * inv_h2 * g
             rates[l] += conductivity
             rates[r] += conductivity
