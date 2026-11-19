@@ -1,0 +1,149 @@
+{
+  "status": "diagnostic_first_stage_only",
+  "source": "independently executed numerical solvers; no manually injected article metrics",
+  "configuration": {
+    "grid": 25,
+    "steps": 20,
+    "dt": 0.02,
+    "fuzzy_structure": [
+      6,
+      0,
+      1
+    ],
+    "fuzzy_params": {
+      "middle": 0.5,
+      "width": 0.55,
+      "strength": 1
+    }
+  },
+  "defect": [
+    {
+      "epsilon": 0.01,
+      "original_change_linf": 0.08584704000000043,
+      "conservative_change_linf": 0.0001558082161403629,
+      "original_maximum_principle_violation": 0.07584704000000042,
+      "conservative_maximum_principle_violation": 0,
+      "original_mass_error": 0,
+      "conservative_mass_error": 0
+    },
+    {
+      "epsilon": 0.0001,
+      "original_change_linf": 0.08584704000000043,
+      "conservative_change_linf": 0.000001555228773764128,
+      "original_maximum_principle_violation": 0.08574704000000044,
+      "conservative_maximum_principle_violation": 0,
+      "original_mass_error": 0,
+      "conservative_mass_error": 0
+    },
+    {
+      "epsilon": 0.000001,
+      "original_change_linf": 0.08584704000000032,
+      "conservative_change_linf": 1.5552003018726168e-8,
+      "original_maximum_principle_violation": 0.08584604000000029,
+      "conservative_maximum_principle_violation": 0,
+      "original_mass_error": 0,
+      "conservative_mass_error": 0
+    },
+    {
+      "epsilon": 1e-8,
+      "original_change_linf": 0.08584704000000032,
+      "conservative_change_linf": 1.5552026333409685e-10,
+      "original_maximum_principle_violation": 0.08584703000000027,
+      "conservative_maximum_principle_violation": 0,
+      "original_mass_error": 0,
+      "conservative_mass_error": 0
+    },
+    {
+      "epsilon": 1e-10,
+      "original_change_linf": 0.08584704000000043,
+      "conservative_change_linf": 1.5554224574998443e-12,
+      "original_maximum_principle_violation": 0.08584703990000042,
+      "conservative_maximum_principle_violation": 0,
+      "original_mass_error": 0,
+      "conservative_mass_error": 0
+    }
+  ],
+  "validation": [
+    {
+      "case": "isotropic",
+      "model": "CA",
+      "rmse": 0.0004252324890305054,
+      "mae": 0.000015887243041815252,
+      "r2": 0.9099593961732683,
+      "mass_error": 2.220446049250313e-16,
+      "minimum": 0,
+      "maximum": 0.13306102579622076
+    },
+    {
+      "case": "isotropic",
+      "model": "original_FCA",
+      "rmse": 0.00030086166793552983,
+      "mae": 0.00002185168106248445,
+      "r2": 0.954926712065311,
+      "mass_error": 1.1102230246251565e-16,
+      "minimum": 0,
+      "maximum": 0.09635971010321501
+    },
+    {
+      "case": "isotropic",
+      "model": "flux_neutral",
+      "rmse": 0.00042523248903050543,
+      "mae": 0.000015887243041815256,
+      "r2": 0.9099593961732683,
+      "mass_error": 1.1102230246251565e-16,
+      "minimum": 0,
+      "maximum": 0.13306102579622076
+    },
+    {
+      "case": "isotropic",
+      "model": "flux_fuzzy",
+      "rmse": 0.0002328091454009741,
+      "mae": 0.000013139994214216428,
+      "r2": 0.973011074467758,
+      "mass_error": 4.440892098500626e-16,
+      "minimum": 0,
+      "maximum": 0.10449366315593286
+    },
+    {
+      "case": "anisotropic",
+      "model": "CA",
+      "rmse": 0.00043175594488626236,
+      "mae": 0.000016173020529283113,
+      "r2": 0.9226850005236608,
+      "mass_error": 4.440892098500626e-16,
+      "minimum": 0,
+      "maximum": 0.14927863163356503
+    },
+    {
+      "case": "anisotropic",
+      "model": "original_FCA",
+      "rmse": 0.00030519083319650544,
+      "mae": 0.000020953230562576678,
+      "r2": 0.9613695226393346,
+      "mass_error": 2.220446049250313e-16,
+      "minimum": 0,
+      "maximum": 0.10683002023138236
+    },
+    {
+      "case": "anisotropic",
+      "model": "flux_neutral",
+      "rmse": 0.00043175594488626214,
+      "mae": 0.00001617302052928311,
+      "r2": 0.9226850005236608,
+      "mass_error": 4.440892098500626e-16,
+      "minimum": 0,
+      "maximum": 0.149278631633565
+    },
+    {
+      "case": "anisotropic",
+      "model": "flux_fuzzy",
+      "rmse": 0.000225502374110178,
+      "mae": 0.000013216958579039687,
+      "r2": 0.9789093802311781,
+      "mass_error": 0,
+      "minimum": 0,
+      "maximum": 0.11914537346756865
+    }
+  ],
+  "interpretation": "The proposed method recovers CA at strength=0 and gives vanishing flux for vanishing gradients. This does not establish general superiority over CA, FDM or FVM."
+}
