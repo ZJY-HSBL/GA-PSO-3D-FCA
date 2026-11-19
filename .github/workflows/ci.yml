@@ -1,4 +1,4 @@
-name: tests
+name: tests-and-diagnostics
 on: [push, pull_request]
 jobs:
   pytest:
@@ -9,4 +9,13 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install -e '.[test]'
-      - run: pytest -q
+      - name: Numerical regression suite
+        run: pytest -q
+      - name: Re-run first-stage diagnostic (computed figures and metrics)
+        run: python -m gapso_fca.research --n 25 --steps 20 --out results/conservative_flux
+      - name: Upload generated diagnostic figures and data
+        uses: actions/upload-artifact@v4
+        with:
+          name: conservative-flux-diagnostics
+          path: results/conservative_flux/
+          if-no-files-found: error
