@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ga-pso-3d-fca"
+version = "0.1.0"
+description = "Reproducible 3-D fuzzy cellular automata diffusion with hierarchical GA/PSO"
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24", "matplotlib>=3.7"]
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+ga-pso-fca = "gapso_fca.experiment:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,27 @@
+{
+  "calibration_grid": [30, 30, 30],
+  "validation_grid": [50, 50, 50],
+  "sensitivity_grids": [30, 40, 50],
+  "dt": 0.02,
+  "time_steps": 50,
+  "calibration_steps": [10, 20, 30],
+  "validation_steps": [40, 50],
+  "initial_mass": 1.0,
+  "boundary": "zero-flux",
+  "conditions": {
+    "isotropic": [0.0016, 0.0016, 0.0016],
+    "anisotropic": [0.0022, 0.0015, 0.0009]
+  },
+  "candidate_neighborhoods": [6, 18, 26],
+  "candidate_rules": ["neutral", "enhance_high_gradient", "suppress_high_gradient"],
+  "candidate_distance_powers": [1, 2],
+  "search_bounds": {
+    "Dx_Dy_Dz": [0.0006, 0.0028],
+    "lambda_s": [0.70, 1.15],
+    "m_f": [0.35, 0.65],
+    "w_f": [0.30, 0.80]
+  },
+  "GA": {"population": 30, "generations": 30, "crossover": 0.80, "mutation": 0.05},
+  "PSO": {"particles": 30, "iterations": 30, "inertia": 0.70, "c1": 1.50, "c2": 1.50},
+  "independent_seeds": 20
+}
