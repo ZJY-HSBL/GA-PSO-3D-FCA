@@ -77,3 +77,24 @@ def test_reject_invalid_materials_and_mask():
         conservative_fca_step(u, (-.001, .002, .003), .02)
     with pytest.raises(ValueError):
         conservative_fca_step(u, (.002,)*3, .02, mask=np.zeros_like(u, bool))
+
+
+def test_quadratic_response_second_order_smooth_neumann():
+    """Numerical order check on one smooth manufactured eigenmode, not a proof."""
+    import math
+    diff, t_final = .0016, .2
+    errors=[]
+    for n in (12, 16, 24, 32):
+        x=np.cos(np.pi*(np.arange(n)+.5)/n)
+        mode=x[:,None,None]*x[None,:,None]*x[None,None,:]
+        state=1+.2*mode
+        steps=math.ceil(t_final*n*n/5.)
+        for _ in range(steps):
+            state=conservative_fca_step(state,(diff,)*3,t_final/steps,
+                                         strength=1,response_power=2)
+        target=1+.2*np.exp(-3*np.pi*np.pi*diff*t_final)*mode
+        errors.append(float(np.sqrt(np.mean((state-target)**2))))
+    grids=(12,16,24,32)
+    orders=[math.log(errors[i-1]/errors[i])/math.log(grids[i]/grids[i-1])
+            for i in range(1,len(errors))]
+    assert min(orders)>1.75
