@@ -55,3 +55,21 @@ These are *exploratory*, single-protocol results under an analytically normalize
 3. Formalize the new fuzzy law and assess sensitivity/identifiability and generalization to unseen materials.
 4. Integrate the new model into a clearly constrained optimization scheme, checking full enumeration versus GA over the original 18 rules.
 5. Run repeated seeds, performance/memory profiling and uncertainty reporting before revising publication-level conclusions.
+
+## Smooth-field numerical consistency experiment (2026-11-19)
+
+A second *independent-of-point-source* experiment uses an exact homogeneous-Neumann eigenmode of the linear diffusion equation:
+
+\[
+u(x,y,z,t)=1+0.2\cos(\pi x)\cos(\pi y)\cos(\pi z)\exp(-3\pi^2Dt),\quad D=0.0016.
+\]
+
+The experiment uses cell centers, final time `T=0.2`, `n=12,16,24,32` and `dt` proportional to `h²` (up to integer step counts). The executed results are in [smooth_neumann.csv](../results/conservative_flux/smooth_neumann.csv), and the experiment code is [convergence.py](../src/gapso_fca/convergence.py).
+
+- Neutral conservative flux (`strength=0`) observed order over the last refinement: **2.022**.
+- Original first-stage fuzzy multiplier based on `z` (`response_power=1`) observed last-step order: **0.467**; this four-grid test does not show second-order behavior.
+- Squared-relative-gradient response (`response_power=2`) observed last-step order: **2.024**, with a monotonically decreasing error on the tested grids.
+
+The squared response is a *candidate consistency-preserving fuzzy law*, not an established novel discretization: for smooth positive fields `z=O(h)` and hence `Phi(z²)/Phi(0)-1=O(h²)` locally. Additional consistency and stability proofs are required for variable/vanishing states and nonsmooth interfaces. This small numerical grid study cannot establish universal second-order convergence.
+
+Re-run: `python -m gapso_fca.convergence --out results/conservative_flux`.
