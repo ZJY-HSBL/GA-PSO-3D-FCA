@@ -104,8 +104,11 @@ def save_grid_sensitivity(out: Path, dt: float, spec):
     ax.grid(alpha=.25);ax.legend();fig.tight_layout()
     fig.savefig(out/'grid_sensitivity.png',dpi=150);plt.close(fig)
 
-def run(mode: str='smoke', out='results/runs/smoke'):
+def run(mode: str='smoke', out='results/runs/smoke', seeds: int | None = None, no_figures: bool = False, condition_only: str | None = None):
     spec=settings(mode)
+    if seeds is not None:
+        if seeds < 1: raise ValueError('seeds must be positive')
+        spec['seeds'] = seeds
     out=Path(out);out.mkdir(parents=True,exist_ok=True)
     cfg=spec['cfg']; dt=.02
     run_rows, model_records, global_summary={}, [], {}
@@ -115,6 +118,7 @@ def run(mode: str='smoke', out='results/runs/smoke'):
                   assumptions=ASSUMPTIONS, note='Measured outputs; not copied from paper tables')
     (out/'run_config.json').write_text(json.dumps(config,ensure_ascii=False,indent=2),encoding='utf-8')
     for condition,D in CONDITIONS.items():
+        if condition_only is not None and condition != condition_only: continue
         print(f'Condition: {condition}, D={D}',flush=True)
         reference_cal={k:reference_field(spec['n_cal'],k,dt,D) for k in spec['calibration']}
         reference_val={k:reference_field(spec['n_val'],k,dt,D) for k in spec['validation']}
@@ -154,11 +158,13 @@ def run(mode: str='smoke', out='results/runs/smoke'):
                                       for metric in ('rmse','mae','r2')})
         global_summary[condition]=summarized
         (out/f'{condition}_selections.json').write_text(json.dumps(dict(Counter(selected)),indent=2))
-        save_figures(out,condition,fields,reference_val,summarized,histories,max(spec['validation']))
+        if not no_figures:
+            save_figures(out,condition,fields,reference_val,summarized,histories,max(spec['validation']))
     with (out/'individual_results.csv').open('w',newline='',encoding='utf-8') as f:
         writer=csv.DictWriter(f,fieldnames=model_records[0].keys());writer.writeheader();writer.writerows(model_records)
     (out/'summary.json').write_text(json.dumps(global_summary,indent=2),encoding='utf-8')
-    save_grid_sensitivity(out, dt, spec)
+    if not no_figures:
+        save_grid_sensitivity(out, dt, spec)
     return global_summary
 
 
@@ -166,8 +172,11 @@ def main():
     parser=argparse.ArgumentParser(description='Reproduce GA–PSO 3D FCA diffusion experiments')
     parser.add_argument('--mode',choices=('smoke','verification','paper'),default='smoke')
     parser.add_argument('--out',type=str,default=None)
+    parser.add_argument('--seeds',type=int,default=None,help='Override the number of independent runs')
+    parser.add_argument('--no-figures',action='store_true',help='Skip expensive plotting; still save CSV and JSON')
+    parser.add_argument('--condition',choices=tuple(CONDITIONS),default=None,help='Run one diffusion condition')
     args=parser.parse_args()
     directory=args.out or f'results/runs/{args.mode}'
-    run(args.mode,directory)
+    run(args.mode,directory,args.seeds,args.no_figures,args.condition)
 
 if __name__=='__main__':main()

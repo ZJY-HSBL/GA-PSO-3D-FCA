@@ -16,6 +16,8 @@ pip install -e '.[test]'
 pytest -q
 # Fast verification (10³ optimization, 16³ validation, one seed):
 ga-pso-fca --mode smoke --out results/runs/smoke
+# Optional: 20 independent small-grid runs, with raw data but no images:
+ga-pso-fca --mode smoke --seeds 20 --no-figures --out results/runs/smoke20
 # Paper grid resolution, but reduced search budget for a quicker numerical check:
 ga-pso-fca --mode verification --out results/runs/verification
 # Article's 30³→50³ protocol with 30×30 GA, 30×30 PSO and 20 independent runs:
@@ -94,6 +96,21 @@ Run `ga-pso-fca --mode smoke` to regenerate the precise CSV, JSON, and all PNG i
 ![Anisotropic diffusion 3D state](assets/anisotropic_3d.png)
 ![Anisotropic convergence](assets/anisotropic_convergence.png)
 
+## More executed evidence: repeated runs and article-resolution sanity checks
+
+The implementation was additionally run with **20 independent seeds per condition** on the small 10³→16³ smoke protocol, with all five methods. There are **200 raw records** in [`results/smoke20_individual.csv`](results/smoke20_individual.csv), with aggregates in [`results/smoke20_summary.json`](results/smoke20_summary.json) and all structure counts in [`results/smoke20_selections.json`](results/smoke20_selections.json). The small-budget algorithm's values, averaged over 20 seeds, were:
+
+| Case / model | FCA | GA-FCA | PSO-FCA | GA-PSO-FCA |
+|---|---:|---:|---:|---:|
+| Isotropic mean RMSE | 0.0026164 | 0.0026168 | 0.0019148 | **0.0011051** |
+| Anisotropic mean RMSE | 0.0026241 | 0.0026605 | 0.0020825 | **0.0014609** |
+
+The smoke runs did **not** reproduce the paper's near-unanimous 6-neighbor/R1 selection, which is unsurprising given the undocumented rules and substantially reduced budgets.
+
+Separately, the 30³ optimization / 50³ validation **grid-resolution checks** (only one seed and small GA/PSO budgets, *not* the full paper run) produced GA-PSO-FCA RMSE **8.26152e-5** (isotropic) and **9.04013e-5** (anisotropic), markedly different from the article's **3.055e-5** and **3.786e-5**. See [`results/verification_summary.json`](results/verification_summary.json). This is documented as a non-reproduction of its published quantitative results, not concealed as agreement.
+
+The release workflow in `.github/workflows/release.yml` builds a wheel and source distribution and attaches them to a GitHub Release **when a `v*` tag is pushed**. No release is claimed until the tag and GitHub Action have actually run.
+
 ## Repository layout
 
 ```text
@@ -103,7 +120,9 @@ src/gapso_fca/experiment.py   CLI, data collection, grid sensitivity, figures, C
 experiments/paper_protocol.json Machine-readable article parameter settings
 tests/test_core.py           Numerical consistency and reproducibility tests
 assets/                      Figures from executed smoke run
-results/smoke_summary.json    Raw summary from the smoke run
+results/smoke_summary.json    Single-seed smoke summary
+results/smoke20_*.{json,csv}   20-seed small-grid experiment results
+results/verification_summary.json   One-seed 30³→50³ sanity checks
 ```
 
 The main outputs include `individual_results.csv`, `summary.json`, `run_config.json`, `grid_sensitivity.csv`, grid-sensitivity PNG, selections JSON, and isotropic/anisotropic slices, 3D states, metrics and convergence PNGs. All plotted measurements originate from the solver; the paper's expected metrics are never injected into evaluation or plotted as measured data.
