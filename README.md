@@ -31,7 +31,12 @@ These are **preliminary diagnostics, not full grid convergence or independent ex
 
 - [Numerical derivation, limitations and verification plan](docs/numerical_defect_and_flux.md)
 - [Generated CSV/JSON results](results/conservative_flux/summary.json)
-- New tests: `tests/test_conservative.py`; the combined suite currently contains 22 passing tests.
+- New tests: `tests/test_conservative.py`; the combined suite currently contains 23 passing tests.
+
+**Measured near-equilibrium defect:**
+
+![Numerical defect experiment generated from archived CSV](assets/conservative_flux_defect.svg)
+
 
 
 ## Quick start
@@ -163,6 +168,9 @@ The main outputs include `individual_results.csv`, `summary.json`, `run_config.j
 
 
 ### Additional numerical evidence: smooth Neumann-mode convergence
+
+![Smooth Neumann field convergence generated from archived CSV](assets/smooth_neumann_convergence.svg)
+
 
 The independent [convergence benchmark](src/gapso_fca/convergence.py) tests the exact smooth Neumann eigenmode of the linear diffusion equation. Its 12³→32³ mesh refinement indicates a **2.02 observed order** for both the neutral conservative solver and the new **quadratic-gradient response** (`response_power=2`), while the earlier linear-gradient fuzzy response does not show second-order behavior over these grids. These are single-problem numerical observations, not a formal convergence theorem or evidence of novelty. See [CSV](results/conservative_flux/smooth_neumann.csv) and the [technical note](docs/numerical_defect_and_flux.md).
 
