@@ -160,3 +160,12 @@ The main outputs include `individual_results.csv`, `summary.json`, `run_config.j
 `pytest -q` currently passes **13 tests**, including conservation and non-negativity in all 6/18/26 neighborhood structures and all 3 rule modes, CA symmetry, anisotropic Gaussian behavior, identity metrics, and deterministic optimization. Code and plots are independently created for this reproduction; the supplied PDF is not redistributed in the repository.
 
 **Future work for exact replication:** obtain the original authors' rule tables, λ0 mapping, raw scripts, random seeds, fitted parameters, and all fitness term scales. Re-run paper mode and compare the archived numerical outputs against Figures 2–8 and Tables 3–5 with differences disclosed.
+
+
+### Additional numerical evidence: smooth Neumann-mode convergence
+
+The independent [convergence benchmark](src/gapso_fca/convergence.py) tests the exact smooth Neumann eigenmode of the linear diffusion equation. Its 12³→32³ mesh refinement indicates a **2.02 observed order** for both the neutral conservative solver and the new **quadratic-gradient response** (`response_power=2`), while the earlier linear-gradient fuzzy response does not show second-order behavior over these grids. These are single-problem numerical observations, not a formal convergence theorem or evidence of novelty. See [CSV](results/conservative_flux/smooth_neumann.csv) and the [technical note](docs/numerical_defect_and_flux.md).
+
+```bash
+python -m gapso_fca.convergence --out results/conservative_flux
+```
