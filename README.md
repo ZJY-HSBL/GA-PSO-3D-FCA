@@ -177,3 +177,5 @@ The independent [convergence benchmark](src/gapso_fca/convergence.py) tests the 
 ```bash
 python -m gapso_fca.convergence --out results/conservative_flux
 ```
+
+**Novelty caution:** established monotone finite-volume and CA diffusion schemes overlap with parts of this prototype. See the [preliminary prior-art screen](docs/prior_art_screen.md); do not claim novelty or generalized superiority without direct comparisons.
