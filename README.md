@@ -6,6 +6,34 @@ The reference PDF describes a conservative 3-D fuzzy cellular automaton (FCA) fo
 
 > **Reproducibility status:** This is an **independent implementation**, not the original authors' source code. Several numerical definitions necessary to match exact reported values are missing in the paper. We explicitly document our choices instead of presenting calculated outputs as exact numerical replication. The `paper` mode reproduces the stated **experiment design**, but the paper's published metrics cannot be guaranteed.
 
+
+## Manuscript-revision research branch: conservative-flux prototype
+
+**New first-stage study (not part of the original authors' method):** `src/gapso_fca/conservative.py` provides a symmetric six-face, finite-volume-like fuzzy diffusion step with harmonic-mean material-interface conductance, impermeable masks, and adaptive CFL substeps. It reduces exactly to the ordinary Fickian CA for `strength=0` when no subcycling is required. The original `core.py` remains unchanged as a baseline.
+
+A falsifiable test of the manuscript-style normalized outgoing fractions shows a near-equilibrium defect: for a uniform 9³ field with one cell lowered by `1e-10`, the paper-style implementation changes the state by `0.08584704` in one step; the new face-flux prototype changes it by `1.5554e-12`. This is a defect in the **stated normalization mechanism**, not evidence that the new approach is scientifically novel or universally more accurate.
+
+Re-run the diagnostic experiment:
+
+```bash
+python -m gapso_fca.research --n 25 --steps 20 --out results/conservative_flux
+pytest -q
+```
+
+The executed 25³, 20-step test (single protocol) produced the following RMSE against a normalized analytical point-source field, all from the solver rather than copied from the article:
+
+| Case | CA | Original implemented FCA | Conservative neutral | Conservative fuzzy |
+|---|---:|---:|---:|---:|
+| Isotropic | 0.000425232 | 0.000300862 | 0.000425232 | 0.000232809 |
+| Anisotropic | 0.000431756 | 0.000305191 | 0.000431756 | 0.000225502 |
+
+These are **preliminary diagnostics, not full grid convergence or independent external validation**. The conservative neutral and CA columns match by construction; no speed or superiority claims over established numerical schemes are made.
+
+- [Numerical derivation, limitations and verification plan](docs/numerical_defect_and_flux.md)
+- [Generated CSV/JSON results](results/conservative_flux/summary.json)
+- New tests: `tests/test_conservative.py`; the combined suite currently contains 22 passing tests.
+
+
 ## Quick start
 
 ```bash
